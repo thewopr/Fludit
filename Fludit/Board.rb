@@ -1,3 +1,5 @@
+require 'GUI'
+
 class Board
 
 	attr_accessor :grid, :colors
@@ -31,3 +33,6 @@ end
 
 b = Board.new(12,12,6)
 b.display
+
+g = GUI.new(b.grid, b.colors)
+g.display
