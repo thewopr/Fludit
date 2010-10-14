@@ -3,24 +3,22 @@ class Board
 	attr_accessor :grid, :colors
 
 	def initialize(width,height,num_colors)
-		@grid = Array.new(width, Array.new(height))
+		@grid = Array.new(width)
+		@grid.map! do |x| Array.new(height,0) end
+
 		@colors = 0...num_colors;
 		@colors = @colors.to_a
 		
-		@grid.each_with_index do |each, r|
-			each.each_with_index do |each2, c|
-				@grid[r][c] = rand(num_colors)
-			end
-		end		
+		@grid.map! do |one| one.map! do |each| rand(num_colors) end end
 	end
 
-	def print
+	def display
 	
 		@grid.each do |r|
 			r.each do |c|
-				print "#{c}"
+				print "%d " % c	
 			end
-			print "\n"
+			puts "\n"
 		end
 
 	end
@@ -32,4 +30,4 @@ class Board
 end
 
 b = Board.new(12,12,6)
-b.print
+b.display
