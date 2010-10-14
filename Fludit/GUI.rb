@@ -32,9 +32,6 @@ class GUI
     @gw.show_all
 
     @gc = Gdk::GC.new(@area.window)
-    @gc.function = Gdk::GC::COPY
-
-    @gc.colormap = Gdk::Colormap.system
 
     Gtk.main
   end
@@ -42,9 +39,8 @@ class GUI
   def redraw_board
     @grid.each_with_index do |r, x|
       r.each_with_index do |c, y|
-        @gc.set_foreground( @colors[c] )
+        @gc.set_rgb_fg_color( @colors[c] )
         @area.window.draw_rectangle(@gc,true,x*@rect_size,y*@rect_size,@rect_size,@rect_size)
-        #puts "Drawing rectangle (#{x},#{y}) ==> #{@colors[c].to_s} ==> #{@gc.foreground}"
       end
     end
   end
