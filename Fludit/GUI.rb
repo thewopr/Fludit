@@ -1,9 +1,9 @@
 require 'gtk2'
 
-class GUI 
+class GUI < Gtk::Window 
 
-	def initialize(grid, colors)
-    @grid = grid
+	def initialize(board)
+    @board = board
     @colors = [
               Gdk::Color.parse("Black"),
               Gdk::Color.parse("White"),
@@ -11,36 +11,33 @@ class GUI
               Gdk::Color.parse("Yellow"),
               Gdk::Color.parse("Red"),
               Gdk::Color.parse("Green")]
-    @width = @grid.size
-    @height = @grid[0].size
+    @width = @board.size
+    @height = @board[0].size
 
     @rect_size = 60
-
-  end
-
-  def display
-    Gtk.init
-    @gw = Gtk::Window.new("Fludit!")
-    @gw.resize(@rect_size * @width,@rect_size * @height)    
-    @gw.signal_connect('delete_event') { Gtk.main_quit }
+    
+    super("Fludit!")
+    resize(@rect_size * @width,@rect_size * @height)    
+    signal_connect('delete_event') { Gtk.main_quit }
 
     @area = Gtk::DrawingArea.new
     @area.set_size_request(@rect_size * @width,@rect_size * @height)
     @area.signal_connect('expose_event')        { |w, e| redraw_board }
 
-    @gw.add(@area)
-    @gw.show_all
-
+    add(@area)
+    show_all
+    
     @gc = Gdk::GC.new(@area.window)
-
+       
     Gtk.main
   end
-    
+
+
   def redraw_board
-    @grid.each_with_index do |r, x|
+    @board.each_with_index do |r, x|
       r.each_with_index do |c, y|
         @gc.set_rgb_fg_color( @colors[c] )
-        @area.window.draw_rectangle(@gc,true,x*@rect_size,y*@rect_size,@rect_size,@rect_size)
+        @area.window.draw_rectangle(@gc,true,y*@rect_size,x*@rect_size,@rect_size,@rect_size)
       end
     end
   end

@@ -1,24 +1,30 @@
 require 'GUI'
+require 'set'
 
-class Board
+class Board < Array
 
-	attr_accessor :grid, :colors
+	attr_accessor :colors, :blob 
 
 	def initialize(width,height,num_colors)
-		@grid = Array.new(width)
-		@grid.map! do |x| Array.new(height,0) end
+		super(width)
+		map! do |x| Array.new(height,0) end
 
 		@colors = 0...num_colors;
 		@colors = @colors.to_a
 		
-		@grid.map! do |one| one.map! do |each| rand(num_colors) end end
+		map! do |one| one.map! do |each| rand(num_colors) end end
+
+    @blob = Set.new
+    @blob.add( [0,0])
+    puts @blob
+
 	end
 
 	def display
 	
-		@grid.each do |r|
+		self.each do |r|
 			r.each do |c|
-				print "%d " % c	
+				print "#{c} "	
 			end
 			puts "\n"
 		end
@@ -26,13 +32,37 @@ class Board
 	end
 
 	def to_s
-		"Board ==== "  + @grid.inspect
+		"Board ==== "  + inspect
 	end
-	
+
+  def flip(color)
+    flip_at(0,0,color)
+  end
+
+
+  def flip_at(x,y,color)
+      
+      s,e = get_s_e(x,y)
+      
+      flip_at(s[0],s[1],color) unless self[x][y] != self[s[0]][s[1]]
+      flip_at(e[0],e[1],color) unless self[x][y] != self[e[0]][e[1]]
+
+      self[x][y] = color
+
+  end
+
+  def get_s_e(x,y)
+      [[x+1,y], [x,y+1]]
+  end
+
+
 end
 
 b = Board.new(12,12,6)
 b.display
+g = GUI.new(b)
 
-g = GUI.new(b.grid, b.colors)
-g.display
+while(true) do
+  command =  gets.chomp
+  eval(command)
+end
