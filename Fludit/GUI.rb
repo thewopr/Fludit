@@ -29,9 +29,11 @@ class GUI < Gtk::Window
     
     @gc = Gdk::GC.new(@area.window)
        
-    Gtk.main
   end
 
+  def start
+    Gtk.main
+  end
 
   def redraw_board
     @board.each_with_index do |r, x|

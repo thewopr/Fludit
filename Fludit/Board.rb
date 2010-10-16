@@ -35,34 +35,61 @@ class Board < Array
 		"Board ==== "  + inspect
 	end
 
-  def flip(color)
-    flip_at(0,0,color)
+  def flip(target_color)
+
+    @flipped = Set.new
+   
+
+    source_color = self[0][0]
+    puts "Flipping all the #{source_color} ==> #{target_color}"
+    flip_at(0,0,source_color,target_color)
+    puts @flipped.inspect
+    display
+
   end
 
 
-  def flip_at(x,y,color)
+  def flip_at(x,y,src_c,tar_c)
       
-      s,e = get_s_e(x,y)
-      
-      flip_at(s[0],s[1],color) unless self[x][y] != self[s[0]][s[1]]
-      flip_at(e[0],e[1],color) unless self[x][y] != self[e[0]][e[1]]
+      neighbors = get_neighbors(x,y)
+      self[x][y] = tar_c
+      @flipped.add( [x,y] )
 
-      self[x][y] = color
+      neighbors.each do |side|
+        x_t,y_t = side
+        flip_at(x_t,y_t,src_c,tar_c) if self[x_t][y_t] == src_c
+      end
 
   end
 
-  def get_s_e(x,y)
-      [[x+1,y], [x,y+1]]
+  def inside(x,y)
+    (x >= 0 and x < self.size) && (y >= 0 && y< self.size)
   end
 
+  def get_neighbors(x,y)
+      n = []
+      n << [x+1,y  ] if inside(x+1,y)
+      n << [x  ,y-1] if inside(x,y-1)
+      n << [x-1,y  ] if inside(x-1,y)
+      n << [x  ,y+1] if inside(x,y+1)
+
+     return n 
+  end
 
 end
 
 b = Board.new(12,12,6)
 b.display
+
 g = GUI.new(b)
+
+thread = Thread.new() do g.start end
 
 while(true) do
   command =  gets.chomp
   eval(command)
+  g.redraw_board
 end
+
+Thread.list.each {|t| p t.inspect}
+
