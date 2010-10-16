@@ -36,10 +36,15 @@ class GUI < Gtk::Window
   end
 
   def redraw_board
+
+    @text = self.create_pango_layout("0")
+
     @board.each_with_index do |r, x|
       r.each_with_index do |c, y|
+        @text.set_text(c.to_s)
         @gc.set_rgb_fg_color( @colors[c] )
         @area.window.draw_rectangle(@gc,true,y*@rect_size,x*@rect_size,@rect_size,@rect_size)
+        @area.window.draw_layout(@gc,y*@rect_size,x*@rect_size,@text,@colors[0],nil)
       end
     end
   end
