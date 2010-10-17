@@ -31,8 +31,6 @@ class GUI < Gtk::Window
     @text = self.create_pango_layout("0")
     @text.width = @rect_size
     @text.justify = true
-    @text.font_description.size = 16
-
   end 
 
   def start
@@ -43,7 +41,8 @@ class GUI < Gtk::Window
 
         @board.each_with_index do |r, x|
       r.each_with_index do |c, y|
-        @text.set_text(c.to_s)
+        @text.markup = "<span font_desc=\"30\">\%d</span>" % c
+#        @text.set_text(c.to_s)
         @gc.set_rgb_fg_color( @colors[c] )
         @area.window.draw_rectangle(@gc,true,y*@rect_size,x*@rect_size,@rect_size,@rect_size)
         @area.window.draw_layout(@gc,y*@rect_size,x*@rect_size,@text,@colors[0],nil)
