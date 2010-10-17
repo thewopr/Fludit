@@ -13,11 +13,6 @@ class Board < Array
 		@colors = @colors.to_a
 		
 		map! do |one| one.map! do |each| rand(num_colors) end end
-
-    @blob = Set.new
-    @blob.add( [0,0])
-    puts @blob
-
 	end
 
 	def display
@@ -35,31 +30,30 @@ class Board < Array
 		"Board ==== "  + inspect
 	end
 
-  def flip(target_color)
-
-    @flipped = Set.new
-   
-
+  def flip!(target_color)
     source_color = self[0][0]
     puts "Flipping all the #{source_color} ==> #{target_color}"
-    flip_at(0,0,source_color,target_color)
-    puts @flipped.inspect
-    display
-
+    return flip_at(self,0,0,source_color,target_color)
   end
 
 
-  def flip_at(x,y,src_c,tar_c)
+  def flip(target_color)
+    temp_board = self.clone
+    source_color = self[0][0]
+    puts "Flipping all the #{source_color} ==> #{target_color}"
+    return flip_at(temp_board,0,0,source_color,target_color)
+  end
+
+  def flip_at(board,x,y,src_c,tar_c)
       
       neighbors = get_neighbors(x,y)
-      self[x][y] = tar_c
-      @flipped.add( [x,y] )
-
+      board[x][y] = tar_c
+      
       neighbors.each do |side|
         x_t,y_t = side
-        flip_at(x_t,y_t,src_c,tar_c) if self[x_t][y_t] == src_c
+        flip_at(board,x_t,y_t,src_c,tar_c) if board[x_t][y_t] == src_c
       end
-
+      return board
   end
 
   def inside(x,y)
@@ -86,10 +80,11 @@ g = GUI.new(b)
 thread = Thread.new() do g.start end
 
 while(true) do
-  command =  gets.chomp
-  eval(command)
+  command = gets.chomp
+  begin
+    eval command
+  rescue Exception => msg
+    puts msg
+  end
   g.redraw_board
 end
-
-Thread.list.each {|t| p t.inspect}
-

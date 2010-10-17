@@ -28,8 +28,12 @@ class GUI < Gtk::Window
     show_all
     
     @gc = Gdk::GC.new(@area.window)
-       
-  end
+    @text = self.create_pango_layout("0")
+    @text.width = @rect_size
+    @text.justify = true
+    @text.font_description.size = 16
+
+  end 
 
   def start
     Gtk.main
@@ -37,9 +41,7 @@ class GUI < Gtk::Window
 
   def redraw_board
 
-    @text = self.create_pango_layout("0")
-
-    @board.each_with_index do |r, x|
+        @board.each_with_index do |r, x|
       r.each_with_index do |c, y|
         @text.set_text(c.to_s)
         @gc.set_rgb_fg_color( @colors[c] )
