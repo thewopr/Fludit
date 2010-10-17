@@ -3,7 +3,7 @@ require 'set'
 
 class Board < Array
 
-	attr_accessor :colors, :blob 
+	attr_accessor :colors 
 
 	def initialize(width,height,num_colors)
 		super(width)
@@ -16,44 +16,45 @@ class Board < Array
 	end
 
 	def display
-	
 		self.each do |r|
 			r.each do |c|
 				print "#{c} "	
 			end
 			puts "\n"
 		end
-
-	end
-
-	def to_s
-		"Board ==== "  + inspect
 	end
 
   def flip!(target_color)
     source_color = self[0][0]
-    puts "Flipping all the #{source_color} ==> #{target_color}"
-    return flip_at(self,0,0,source_color,target_color)
+    return self.flip_at(0,0,source_color,target_color)
+  end
+
+  def self.puts_obj(o)
+    puts "%s ==> %X" % [o.class, o.object_id]
+  end
+
+  def disp_addrs(board)
+    Board.puts_obj(board)
+    board.map do |x| Board.puts_obj(x) end
+    puts "\n"
   end
 
 
   def flip(target_color)
     temp_board = self.clone
-    source_color = self[0][0]
-    puts "Flipping all the #{source_color} ==> #{target_color}"
-    return flip_at(temp_board,0,0,source_color,target_color)
+    source_color = temp_board[0][0]
+    return temp_board.flip_at(0,0,source_color,target_color)
   end
 
-  def flip_at(board,x,y,src_c,tar_c)
-      
+  def flip_at(x,y,src_c,tar_c)
       neighbors = get_neighbors(x,y)
-      board[x][y] = tar_c
+      self[x][y] = tar_c
       
       neighbors.each do |side|
         x_t,y_t = side
-        flip_at(board,x_t,y_t,src_c,tar_c) if board[x_t][y_t] == src_c
+        self.flip_at(x_t,y_t,src_c,tar_c) if self[x_t][y_t] == src_c
       end
-      return board
+      return self
   end
 
   def inside(x,y)
@@ -68,6 +69,11 @@ class Board < Array
       n << [x  ,y+1] if inside(x,y+1)
 
      return n 
+  end
+
+  def clone
+    temp = self.dup
+    temp.each_with_index do |arr, i| temp[i] = arr.clone end 
   end
 
 end

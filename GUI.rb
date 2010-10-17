@@ -38,7 +38,7 @@ class GUI < Gtk::Window
   end
 
   def redraw_board
-
+        puts "Redrawing board (%X)" % @board.object_id
         @board.each_with_index do |r, x|
       r.each_with_index do |c, y|
         @text.markup = "<span font_desc=\"30\">\%d</span>" % c
