@@ -11,8 +11,8 @@ class GUI < Gtk::Window
               Gdk::Color.parse("Yellow"),
               Gdk::Color.parse("Red"),
               Gdk::Color.parse("Green")]
-    @width = @board.size
-    @height = @board[0].size
+    @width = @board.grid.size
+    @height = @board.grid[0].size
 
     @rect_size = 60
     
@@ -39,7 +39,7 @@ class GUI < Gtk::Window
 
   def redraw_board
         puts "Redrawing board (%X)" % @board.object_id
-        @board.each_with_index do |r, x|
+        @board.grid.each_with_index do |r, x|
       r.each_with_index do |c, y|
         @text.markup = "<span font_desc=\"30\">\%d</span>" % c
 #        @text.set_text(c.to_s)

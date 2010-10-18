@@ -1,7 +1,7 @@
 require 'GUI'
 require 'Board'
 
-b = Board.new(12,12,6)
+b = Board.new
 b.display
 
 g = GUI.new(b)
