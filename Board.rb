@@ -37,6 +37,7 @@ class Board
 
   def flip(target_color)
     temp_board = self.clone
+    
     source_color = temp_board.grid[0][0]
     if source_color == target_color
       return nil
@@ -56,6 +57,27 @@ class Board
       end
       return self
   end
+ 
+  def count_blob(x,y)
+    target_color = @grid[x][y]
+    set = Set.new
+    rec_blob(x,y,target_color,set)
+    set.size
+  end
+
+  def rec_blob(x,y,t_color, set)
+    if @grid[x][y] == t_color
+
+      if set.add?( [x,y] ) != nil
+        neighbors = get_neighbors(x,y)
+        neighbors.each do |side|
+          x_t,y_t = side
+          self.rec_blob(x_t,y_t,t_color,set) 
+        end     
+      end
+    end
+  end
+
 
   def inside(x,y)
     (x >= 0 and x < @grid.size) && (y >= 0 && y < @grid.size)
@@ -74,6 +96,7 @@ class Board
     temp = self.dup
     temp.grid = @grid.clone
     temp.grid.each_with_index do |arr, i| temp.grid[i] = arr.clone end 
+    return temp
   end
 
   def hash
@@ -101,9 +124,9 @@ class Board
     puts "%s ==> %X" % [o.class, o.object_id]
   end
 
-  def print_objects(board)
-    Board.puts_obj(board)
-    board.map do |x| Board.puts_obj(x) end
+  def print_objects
+    Board.puts_obj(self)
+    self.grid.map do |x| Board.puts_obj(x) end
     puts "\n"
   end
 

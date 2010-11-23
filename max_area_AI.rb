@@ -7,7 +7,7 @@ require 'Board'
 
 files = "boards/b%d.obj"
 
-results = File.new("results/max_tiles_AI.txt", "w")
+results = File.new("results/random_AI.txt", "w")
 results_arr = Array.new
 
 100.times do |i|
@@ -16,12 +16,22 @@ results_arr = Array.new
   
   turn = 0
 
-  while !board.done?
-    x = board.flip!(rand(Board.colors.size))
-    if x != nil 
-      turn += 1
-    end
+  while !board.done? || turn == 5
 
+    max_gain = Array.new
+
+    Board.colors.each do |col| 
+      poss_outcome = board.flip(col)
+      if poss_outcome.nil?
+        max_gain << 0
+      else
+        max_gain << poss_outcome.count_blob(0,0)
+      end
+    end
+    
+    board.flip!( max_gain.index(max_gain.max ))
+
+    turn += 1
   end
 
   results.print "%s\n" % turn

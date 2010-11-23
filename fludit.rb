@@ -13,7 +13,7 @@ thread = Thread.new() do g.start end
 while(true) do
   command = gets.chomp
   begin
-    eval command
+    puts eval command
   rescue Exception => msg
     puts msg
   end
